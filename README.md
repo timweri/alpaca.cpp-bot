@@ -42,4 +42,23 @@ mv .env.stub .env
 python3 alpaca_cpp_interface/telegram_bot.py
 ```
 
-6. Start talking to the chat bot on Telegram
+6. Start talking to the chat bot on Telegram.
+
+A few things to note:
+- alpaca.cpp can only handle one prompt at a time. If alpaca.cpp is still generating answer for a prompt, alpaca_cpp_interface will ignore any new prompts
+- alpaca.cpp takes quite some time to generate an answer so be patient
+- If you are not sure if alpaca.cpp crashed, just query the state using the appropriate chat bot command
+
+## Chat platforms
+
+Right now, only Telegram is available out of the box.
+The existing alpaca_cpp_interface makes it very easy to expose alpaca.cpp to another chat platform.
+
+
+### Telegram
+
+#### Commands
+- `/start`: start the alpaca.cpp instance if not already started
+- `/restart`: restart the alpaca.cpp instance or start one if none is running
+- `/state`: check if alpaca.cpp is running
+- `/kill`: kill the alpaca.cpp instance if active
