@@ -36,7 +36,7 @@ mv .env.stub .env
 
 4. Fill in `.env`
 
-5. Run
+5. Run the desired chat bot
 
 ```sh
 python3 alpaca_cpp_interface/telegram_bot.py
@@ -56,6 +56,10 @@ The existing alpaca_cpp_interface makes it very easy to expose alpaca.cpp to ano
 
 
 ### Telegram
+
+Currently, the Telegram bot implementation only supports one instance of alpaca.cpp.
+There are pending changes to allow more alpaca.cpp instances to be spawned.
+Since this project is meant to run on a personal computer, some limit would be imposed to make sure not too many instances would spawn.
 
 #### Commands
 - `/start`: start the alpaca.cpp instance if not already started
