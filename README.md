@@ -48,6 +48,7 @@ A few things to note:
 - alpaca.cpp can only handle one prompt at a time. If alpaca.cpp is still generating answer for a prompt, alpaca_cpp_interface will ignore any new prompts
 - alpaca.cpp takes quite some time to generate an answer so be patient
 - If you are not sure if alpaca.cpp crashed, just query the state using the appropriate chat bot command
+- `alpaca_cpp_interface` is asynchronous so be mindful of that when you use it
 
 ## Chat platforms
 
