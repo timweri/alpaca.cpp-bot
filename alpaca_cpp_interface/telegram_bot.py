@@ -1,6 +1,7 @@
 import asyncio
 from dotenv import load_dotenv
 from telebot.async_telebot import AsyncTeleBot
+from telebot.asyncio_handler_backends import ContinueHandling
 import os
 import sys
 from interface import AlpacaCppInterface
@@ -12,11 +13,30 @@ TELEGRAM_BOT_API_TOKEN = os.getenv('TELEGRAM_BOT_API_TOKEN')
 ALPACA_CPP_EXEC_PATH = os.getenv('ALPACA_CPP_EXEC_PATH')
 MODEL_PATH = os.getenv('MODEL_PATH')
 
+def get_whitelist():
+    whitelist = os.getenv('TELEGRAM_USERNAME_WHITELIST').split(',')
+    whitelist = set(map(str.strip, whitelist))
+
+    return whitelist
+
+WHITELIST = get_whitelist()
+
 async def main():
     bot = AsyncTeleBot(TELEGRAM_BOT_API_TOKEN, parse_mode=None) 
 
     alpaca_cpp_interface = AlpacaCppInterface(ALPACA_CPP_EXEC_PATH, MODEL_PATH)
     await alpaca_cpp_interface.start()
+
+    @bot.message_handler(func=lambda m: True)
+    async def log_message(message):
+        print(f'Received a message from {message.from_user.username}')
+        return ContinueHandling()
+
+    @bot.message_handler(func=lambda m: True)
+    async def whitelist_check(message):
+        if len(WHITELIST) == 0 or message.from_user.username in WHITELIST:
+            return ContinueHandling()
+        print(f'{message.from_user.username} not in whitelist')
 
     @bot.message_handler(commands=['restart'])
     async def send_restart(message):
@@ -64,6 +84,7 @@ Chat normally to talk to the AlpacaCpp instance if active.''')
                     await bot.reply_to(message, "Failed to process prompt.")
                     return
 
+                await bot.send_chat_action(message.chat.id, 'typing', timeout=60)
                 await bot.reply_to(message, await alpaca_cpp_interface.read())
             except Exception as e:
                 traceback.print_exc()
