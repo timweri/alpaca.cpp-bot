@@ -52,7 +52,8 @@ A few things to note:
 ## Chat platforms
 
 Right now, only Telegram is available out of the box.
-The existing alpaca_cpp_interface makes it very easy to expose alpaca.cpp to another chat platform.
+The existing `alpaca_cpp_interface` makes it very easy to expose alpaca.cpp to another chat platform.
+`alpaca_cpp_interface` is now async.
 
 
 ### Telegram
