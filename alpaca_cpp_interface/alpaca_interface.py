@@ -17,6 +17,9 @@ class AlpacaCppInterface:
         await self.start()
 
     async def start(self):
+        if self.state == AlpacaCppInterface.State.ACTIVE:
+            return False
+
         self.cli_process = await asyncio.create_subprocess_shell(
                 ' '.join([self.alpaca_exec_path, '-m', self.model_path]),
                 stdin=asyncio.subprocess.PIPE,
@@ -29,6 +32,7 @@ class AlpacaCppInterface:
         # Signal whether alpaca.cpp is ready for another prompt
         self.ready_for_prompt = True
         await self._initial_flush_readline()
+        return True
     
     # Flush the initial prints before first user prompt
     async def _initial_flush_readline(self):
@@ -41,7 +45,7 @@ class AlpacaCppInterface:
 
         # Flush "> "
         await self.cli_process.stdout.read(2)
-
+        return True
 
     # Read the alpaca.cpp generated text
     # Blocks until alpaca.cpp finishes
@@ -49,7 +53,7 @@ class AlpacaCppInterface:
         # Shouldn't be reading if process is killed or alpaca.cpp is waiting for
         # user input
         if self.state != AlpacaCppInterface.State.ACTIVE or self.ready_for_prompt:
-            return
+            return False
 
         output = ''
 
@@ -108,13 +112,17 @@ class AlpacaCppInterface:
 
     async def terminate(self):
         if self.state != AlpacaCppInterface.State.ACTIVE:
-            return
+            return False
 
         self.state = AlpacaCppInterface.State.TERMINATED
 
         await self.cli_process.stdin.close()
         await self.cli_process.terminate()
         await self.cli_process.wait(timeout=0.2)
+        return True
 
-    def __del__(self):
-        asyncio.run(self.terminate())
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self):
+        await self.terminate()
