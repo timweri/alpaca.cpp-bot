@@ -1,6 +1,8 @@
 # alpaca.cpp-bot
 Allow chat bots to interact with local alpaca.cpp instances. You can run alpaca.cpp on your local computer and serve it to Telegram, Discord, ...
 
+![alpaca-demo](https://user-images.githubusercontent.com/9196362/233763345-8d57dd5a-b8b1-4aed-9606-b8767cd8b34d.gif)
+
 To make this happen, alpaca.cpp-bot acts as a middleman, extracting and forwarding alpaca.cpp's output to the Python runtime, and forwarding prompts
 from the Python runtime back to alpaca.cpp. alpaca.cpp-bot runs alpaca.cpp as a subprocess, and reads from and writes to the pipes connected to the
 stdout and stdin of the alpaca.cpp subprocess.
