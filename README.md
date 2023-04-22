@@ -45,23 +45,31 @@ python3 alpaca_cpp_interface/telegram_bot.py
 6. Start talking to the chat bot on Telegram.
 
 A few things to note:
-- alpaca.cpp can only handle one prompt at a time. If alpaca.cpp is still generating answer for a prompt, alpaca_cpp_interface will ignore any new prompts
+- alpaca.cpp can only handle one prompt at a time. If alpaca.cpp is still generating answer for a prompt, `AlpacaCppInterface` will ignore any new prompts
 - alpaca.cpp takes quite some time to generate an answer so be patient
 - If you are not sure if alpaca.cpp crashed, just query the state using the appropriate chat bot command
-- `alpaca_cpp_interface` is asynchronous so be mindful of that when you use it
+- Async is used wherever possible
 
 ## Chat platforms
 
 Right now, only Telegram is available out of the box.
-The existing `alpaca_cpp_interface` makes it very easy to expose alpaca.cpp to another chat platform.
-`alpaca_cpp_interface` is now async.
+`AlpacaCppInterface` and `AlpacaCppPool` make it very easy to expose alpaca.cpp to another chat platform.
 
+`AlpacaCppPool` supports multiple instances of AlpacaCpps. This allows different users to interact with their own instance of AlpacaCpp.
 
 ### Telegram
 
 Currently, the Telegram bot implementation only supports one instance of alpaca.cpp.
 There are pending changes to allow more alpaca.cpp instances to be spawned.
 Since this project is meant to run on a personal computer, some limit would be imposed to make sure not too many instances would spawn.
+
+#### Whitelist
+
+The optional whitelist function helps limit access to your bot by Telegram username.
+In the `.env` file, set `TELEGRAM_USERNAME_WHITELIST` to a comma-delimited list of Telegram username to whitelist.
+If it's blank, then all usernames are allowed.
+
+When a username is not on the whitelist, the bot will ignore any message from them.
 
 #### Commands
 - `/start`: start the alpaca.cpp instance if not already started
